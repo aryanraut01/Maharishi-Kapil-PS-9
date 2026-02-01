@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic Token Booking System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <i class="fas fa-stethoscope"></i>
+                MediQuick Token
+            </a>
+            <div class="nav-links">
+                <a href="#book-token">Book Token</a>
+                <a href="#check-status">Check Status</a>
+                <a href="#voice-booking">Voice Booking</a>
+                <a href="dashboard.html" class="btn-outline">Doctor Login</a>
+                <a href="admin.html" class="btn-outline">Admin Login</a>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Book Your Doctor's Token Instantly</h1>
+                <p>Skip the queue, book your token online or via voice call</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-users"></i>
+                        <span id="patients-today">0</span>
+                        <p>Patients Today</p>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-clock"></i>
+                        <span id="avg-wait-time">15</span>
+                        <p>Avg Wait Time (mins)</p>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-calendar-check"></i>
+                        <span id="tokens-available">20</span>
+                        <p>Tokens Available</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Booking Section -->
+        <section id="book-token" class="card booking-section">
+            <h2><i class="fas fa-calendar-plus"></i> Book Your Token</h2>
+            <div class="booking-form">
+                <div class="form-group">
+                    <label for="patient-name">Full Name *</label>
+                    <input type="text" id="patient-name" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="patient-phone">Phone Number *</label>
+                    <input type="tel" id="patient-phone" placeholder="Enter 10-digit mobile number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="patient-age">Age *</label>
+                    <input type="number" id="patient-age" min="1" max="120" placeholder="Age" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="patient-gender">Gender</label>
+                    <select id="patient-gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="booking-date">Preferred Date *</label>
+                    <input type="date" id="booking-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="symptoms">Symptoms (Optional)</label>
+                    <textarea id="symptoms" placeholder="Briefly describe your symptoms"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="whatsapp-updates">
+                        Receive updates on WhatsApp
+                    </label>
+                    <label>
+                        <input type="checkbox" id="sms-updates">
+                        Receive SMS updates
+                    </label>
+                </div>
+                
+                <button id="book-token-btn" class="btn-primary">
+                    <i class="fas fa-ticket-alt"></i> Generate Token
+                </button>
+            </div>
+            
+            <!-- Token Display -->
+            <div id="token-display" class="token-display hidden">
+                <div class="token-card">
+                    <div class="token-header">
+                        <h3>Your Token Details</h3>
+                        <span class="token-badge">Active</span>
+                    </div>
+                    <div class="token-body">
+                        <div class="token-number">
+                            <span class="label">Token No:</span>
+                            <span id="token-no" class="value">--</span>
+                        </div>
+                        <div class="token-info">
+                            <div class="info-item">
+                                <span class="label">Name:</span>
+                                <span id="token-name" class="value">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Estimated Time:</span>
+                                <span id="token-estimated-time" class="value">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Current Token:</span>
+                                <span id="current-serving" class="value">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Wait Ahead:</span>
+                                <span id="wait-ahead" class="value">-- patients</span>
+                            </div>
+                        </div>
+                        <div class="token-actions">
+                            <button id="cancel-token" class="btn-danger">
+                                <i class="fas fa-times"></i> Cancel Token
+                            </button>
+                            <button id="share-token" class="btn-secondary">
+                                <i class="fas fa-share-alt"></i> Share
+                            </button>
+                        </div>
+                        <div class="token-qr">
+                            <div id="qrcode"></div>
+                            <p>Scan for updates</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Voice Booking Section -->
+        <section id="voice-booking" class="card voice-section">
+            <h2><i class="fas fa-microphone"></i> Voice Booking</h2>
+            <div class="voice-controls">
+                <button id="start-voice-btn" class="btn-voice">
+                    <i class="fas fa-microphone"></i> Start Voice Booking
+                </button>
+                <button id="stop-voice-btn" class="btn-voice stop" disabled>
+                    <i class="fas fa-stop"></i> Stop
+                </button>
+                <div id="voice-status" class="voice-status">
+                    <p>Click "Start Voice Booking" and speak your details</p>
+                </div>
+                <div id="voice-output" class="voice-output hidden">
+                    <h4>Recognized Text:</h4>
+                    <p id="voice-text"></p>
+                    <button id="confirm-voice-booking" class="btn-primary">
+                        Confirm Booking
+                    </button>
+                </div>
+            </div>
+            <div class="voice-instructions">
+                <h4>Voice Commands:</h4>
+                <ul>
+                    <li>Say "Book appointment for [Your Name]"</li>
+                    <li>Say "My phone number is [Number]"</li>
+                    <li>Say "I am [Age] years old"</li>
+                    <li>Say "Symptoms are [Your Symptoms]"</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Status Check Section -->
+        <section id="check-status" class="card status-section">
+            <h2><i class="fas fa-search"></i> Check Token Status</h2>
+            <div class="status-check">
+                <div class="form-group">
+                    <label for="token-search">Enter Token Number or Phone</label>
+                    <input type="text" id="token-search" placeholder="Token number or phone">
+                </div>
+                <button id="check-status-btn" class="btn-primary">
+                    <i class="fas fa-search"></i> Check Status
+                </button>
+            </div>
+            <div id="status-result" class="status-result hidden">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Live Queue Section -->
+        <section id="live-queue" class="card queue-section">
+            <h2><i class="fas fa-tv"></i> Live Queue Status</h2>
+            <div class="queue-info">
+                <div class="current-token">
+                    <h3>Currently Serving</h3>
+                    <div class="token-large" id="live-current-token">--</div>
+                    <p id="live-patient-name">--</p>
+                </div>
+                <div class="upcoming-tokens">
+                    <h3>Upcoming Tokens</h3>
+                    <div id="upcoming-tokens-list" class="tokens-list">
+                        <!-- Tokens will be dynamically added -->
+                    </div>
+                </div>
+            </div>
+            <div class="wait-time-estimate">
+                <h4><i class="fas fa-clock"></i> Estimated Wait Time</h4>
+                <div class="wait-time-display">
+                    <span id="estimated-wait">15-20 minutes</span>
+                    <p>Based on current queue</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Clinic Hours</h4>
+                    <p>Morning: 9 AM - 1 PM</p>
+                    <p>Evening: 5 PM - 8 PM</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-phone"></i> +91-9876543210</p>
+                    <p><i class="fas fa-envelope"></i> clinic@example.com</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Emergency</h4>
+                    <p>24/7 Emergency: 102</p>
+                    <p>Ambulance: 108</p>
+                </div>
+            </div>
+            <p class="copyright">&copy; 2024 Clinic Token System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="notification-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <i class="fas fa-bell notification-icon"></i>
+                <h3 id="modal-title">Notification</h3>
+                <p id="modal-message"></p>
+                <button id="modal-ok" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

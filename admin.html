@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Clinic Token System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="container">
+            <div class="header-left">
+                <h1><i class="fas fa-cogs"></i> Admin Panel</h1>
+                <p>Clinic Management System</p>
+            </div>
+            <div class="header-right">
+                <div class="admin-info">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=2E7D32&color=fff" alt="Admin">
+                    <div>
+                        <h4>Super Admin</h4>
+                        <p>Last login: Today, 09:30 AM</p>
+                    </div>
+                </div>
+                <button id="admin-logout" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a href="#dashboard" class="nav-item active">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#doctors" class="nav-item">
+                    <i class="fas fa-user-md"></i> Doctors
+                </a>
+                <a href="#clinics" class="nav-item">
+                    <i class="fas fa-hospital"></i> Clinics
+                </a>
+                <a href="#appointments" class="nav-item">
+                    <i class="fas fa-calendar-check"></i> Appointments
+                </a>
+                <a href="#reports" class="nav-item">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+                <a href="#notifications" class="nav-item">
+                    <i class="fas fa-bell"></i> Notifications
+                </a>
+                <a href="#settings" class="nav-item">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </nav>
+            
+            <div class="system-status">
+                <h4>System Status</h4>
+                <div class="status-item">
+                    <span>API Server</span>
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="status-item">
+                    <span>Database</span>
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="status-item">
+                    <span>SMS Gateway</span>
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="status-item">
+                    <span>Voice Service</span>
+                    <span class="status-indicator offline"></span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Admin Content -->
+        <main class="admin-main">
+            <!-- Dashboard Overview -->
+            <section id="dashboard" class="admin-section">
+                <div class="admin-stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-patients-today">156</h3>
+                            <p>Patients Today</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="appointments-today">128</h3>
+                            <p>Appointments Today</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pending-tokens">28</h3>
+                            <p>Pending Tokens</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card">
+                        <div class="stat-icon danger">
+                            <i class="fas fa-calendar-times"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="cancelled-today">12</h3>
+                            <p>Cancelled Today</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3>Daily Patient Flow</h3>
+                            <select id="chart-period">
+                                <option value="day">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                            </select>
+                        </div>
+                        <canvas id="patientFlowChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3>Doctor Performance</h3>
+                        </div>
+                        <canvas id="doctorPerformanceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="activity-card">
+                    <div class="card-header">
+                        <h3>Recent Activity</h3>
+                        <button id="refresh-activity" class="btn-icon">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                    <div class="activity-list" id="activity-list">
+                        <!-- Activity items will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Doctors Management -->
+            <section id="doctors" class="admin-section hidden">
+                <div class="section-header">
+                    <h2>Doctors Management</h2>
+                    <button id="add-doctor-btn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add New Doctor
+                    </button>
+                </div>
+                
+                <div class="doctors-grid" id="doctors-grid">
+                    <!-- Doctor cards will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Clinic Management -->
+            <section id="clinics" class="admin-section hidden">
+                <div class="section-header">
+                    <h2>Clinic Management</h2>
+                    <button id="add-clinic-btn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Clinic
+                    </button>
+                </div>
+                
+                <div class="clinics-list">
+                    <div class="clinic-card">
+                        <div class="clinic-header">
+                            <h3>Main City Clinic</h3>
+                            <span class="status-badge active">Active</span>
+                        </div>
+                        <div class="clinic-info">
+                            <p><i class="fas fa-map-marker-alt"></i> 123 Main Street, City</p>
+                            <p><i class="fas fa-phone"></i> +91-9876543210</p>
+                            <p><i class="fas fa-clock"></i> 9 AM - 8 PM</p>
+                        </div>
+                        <div class="clinic-stats">
+                            <div class="stat">
+                                <strong>5</strong>
+                                <span>Doctors</span>
+                            </div>
+                            <div class="stat">
+                                <strong>156</strong>
+                                <span>Today's Patients</span>
+                            </div>
+                        </div>
+                        <div class="clinic-actions">
+                            <button class="btn-secondary"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-danger"><i class="fas fa-trash"></i> Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Settings -->
+            <section id="settings" class="admin-section hidden">
+                <div class="section-header">
+                    <h2>System Settings</h2>
+                </div>
+                
+                <div class="settings-tabs">
+                    <div class="tab-header">
+                        <button class="tab-btn active" data-tab="general">General</button>
+                        <button class="tab-btn" data-tab="notifications">Notifications</button>
+                        <button class="tab-btn" data-tab="sms">SMS/WhatsApp</button>
+                        <button class="tab-btn" data-tab="voice">Voice Settings</button>
+                        <button class="tab-btn" data-tab="api">API Settings</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="general-tab">
+                        <form id="general-settings-form">
+                            <div class="form-group">
+                                <label for="clinic-name">Clinic Name</label>
+                                <input type="text" id="clinic-name" value="MediQuick Clinic">
+                            </div>
+                            <div class="form-group">
+                                <label for="opd-hours">OPD Hours</label>
+                                <div class="time-inputs">
+                                    <input type="time" id="morning-start" value="09:00">
+                                    <span>to</span>
+                                    <input type="time" id="morning-end" value="13:00">
+                                    <span>(Morning)</span>
+                                </div>
+                                <div class="time-inputs">
+                                    <input type="time" id="evening-start" value="17:00">
+                                    <span>to</span>
+                                    <input type="time" id="evening-end" value="20:00">
+                                    <span>(Evening)</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="max-tokens">Maximum Tokens per Session</label>
+                                <input type="number" id="max-tokens" value="30" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="token-validity">Token Validity (minutes)</label>
+                                <input type="number" id="token-validity" value="15" min="1">
+                            </div>
+                            <button type="submit" class="btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                    
+                    <div class="tab-content" id="notifications-tab">
+                        <h3>Notification Settings</h3>
+                        <form id="notification-settings-form">
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enable-sms" checked>
+                                    Enable SMS Notifications
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enable-whatsapp" checked>
+                                    Enable WhatsApp Notifications
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enable-voice-call">
+                                    Enable Voice Call Reminders
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="reminder-time">Reminder Time (minutes before)</label>
+                                <input type="number" id="reminder-time" value="30" min="5">
+                            </div>
+                            <button type="submit" class="btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                    
+                    <div class="tab-content" id="sms-tab">
+                        <h3>SMS/WhatsApp Gateway Settings</h3>
+                        <form id="sms-settings-form">
+                            <div class="form-group">
+                                <label for="sms-provider">SMS Provider</label>
+                                <select id="sms-provider">
+                                    <option value="twilio">Twilio</option>
+                                    <option value="msg91">MSG91</option>
+                                    <option value="nexmo">Vonage (Nexmo)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="api-key">API Key</label>
+                                <input type="password" id="api-key" placeholder="Enter API key">
+                            </div>
+                            <div class="form-group">
+                                <label for="sender-id">Sender ID</label>
+                                <input type="text" id="sender-id" placeholder="CLINIC">
+                            </div>
+                            <div class="form-group">
+                                <label for="whatsapp-number">WhatsApp Business Number</label>
+                                <input type="text" id="whatsapp-number" placeholder="+1234567890">
+                            </div>
+                            <button type="submit" class="btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Doctor Modal -->
+    <div id="add-doctor-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Add New Doctor</h3>
+            <form id="add-doctor-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="doctor-name">Full Name *</label>
+                        <input type="text" id="doctor-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctor-specialization">Specialization *</label>
+                        <select id="doctor-specialization" required>
+                            <option value="">Select specialization</option>
+                            <option value="general">General Physician</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="orthopedics">Orthopedics</option>
+                            <option value="pediatrics">Pediatrics</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="doctor-phone">Phone Number *</label>
+                        <input type="tel" id="doctor-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctor-email">Email *</label>
+                        <input type="email" id="doctor-email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="doctor-qualification">Qualifications</label>
+                    <textarea id="doctor-qualification" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="doctor-experience">Experience (years)</label>
+                    <input type="number" id="doctor-experience" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="doctor-consultation-fee">Consultation Fee (₹)</label>
+                    <input type="number" id="doctor-consultation-fee" min="0">
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Add Doctor</button>
+                    <button type="button" class="btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

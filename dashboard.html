@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - Clinic Token System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="header-left">
+                <h1><i class="fas fa-user-md"></i> Doctor Dashboard</h1>
+                <div class="session-info">
+                    <span class="session-badge active">OPD Session Active</span>
+                    <span id="session-timer">05:00:00</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="doctor-info">
+                    <img src="https://ui-avatars.com/api/?name=Dr+Smith&background=4A90E2&color=fff" alt="Doctor">
+                    <div>
+                        <h4>Dr. Smith</h4>
+                        <p>General Physician</p>
+                    </div>
+                </div>
+                <button id="logout-btn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#queue-management" class="nav-item active">
+                    <i class="fas fa-list-ol"></i> Queue Management
+                </a>
+                <a href="#patient-history" class="nav-item">
+                    <i class="fas fa-history"></i> Patient History
+                </a>
+                <a href="#leave-management" class="nav-item">
+                    <i class="fas fa-calendar-times"></i> Leave Management
+                </a>
+                <a href="#settings" class="nav-item">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <a href="#notifications" class="nav-item">
+                    <i class="fas fa-bell"></i> Notifications
+                    <span class="notification-count">3</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-stats">
+                <h4>Today's Summary</h4>
+                <div class="stat-item">
+                    <span>Total Patients</span>
+                    <strong id="total-patients">24</strong>
+                </div>
+                <div class="stat-item">
+                    <span>Waiting</span>
+                    <strong id="waiting-patients">8</strong>
+                </div>
+                <div class="stat-item">
+                    <span>Served</span>
+                    <strong id="served-patients">16</strong>
+                </div>
+                <div class="stat-item">
+                    <span>Avg Time/Patient</span>
+                    <strong id="avg-patient-time">12m</strong>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Current Token Display -->
+            <section class="dashboard-card current-token-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-user-injured"></i> Current Patient</h2>
+                    <div class="card-actions">
+                        <button id="delay-btn" class="btn-warning">
+                            <i class="fas fa-clock"></i> Add Delay
+                        </button>
+                        <button id="skip-btn" class="btn-danger">
+                            <i class="fas fa-forward"></i> Skip
+                        </button>
+                    </div>
+                </div>
+                <div class="current-patient-details">
+                    <div class="patient-token-display">
+                        <div class="token-number-large">T-<span id="current-token-number">015</span></div>
+                        <div class="patient-info">
+                            <h3 id="current-patient-name">John Doe</h3>
+                            <div class="patient-meta">
+                                <span><i class="fas fa-user"></i> 35 years, Male</span>
+                                <span><i class="fas fa-phone"></i> +91 9876543210</span>
+                                <span><i class="fas fa-clock"></i> Waiting: 25 min</span>
+                            </div>
+                            <div class="patient-symptoms">
+                                <strong>Symptoms:</strong>
+                                <p id="current-symptoms">Fever, cough, headache</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="patient-actions">
+                        <button id="serve-btn" class="btn-primary btn-large">
+                            <i class="fas fa-check-circle"></i> Mark as Served
+                        </button>
+                        <button id="call-next-btn" class="btn-secondary btn-large">
+                            <i class="fas fa-bullhorn"></i> Call Next Patient
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Queue Management -->
+            <section id="queue-management" class="dashboard-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-users"></i> Patient Queue</h2>
+                    <div class="queue-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-queue" placeholder="Search patient...">
+                        </div>
+                        <button id="refresh-queue" class="btn-icon">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="queue-table-container">
+                    <table class="queue-table">
+                        <thead>
+                            <tr>
+                                <th>Token No</th>
+                                <th>Patient Name</th>
+                                <th>Age</th>
+                                <th>Phone</th>
+                                <th>Wait Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="queue-table-body">
+                            <!-- Queue rows will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="queue-summary">
+                    <div class="summary-item">
+                        <span>Total in Queue:</span>
+                        <strong id="queue-total">8</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Estimated Completion:</span>
+                        <strong id="queue-completion">2:15 PM</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Leave Management -->
+            <section id="leave-management" class="dashboard-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-calendar-times"></i> Leave Management</h2>
+                    <div class="card-actions">
+                        <button id="add-planned-leave" class="btn-primary">
+                            <i class="fas fa-plus"></i> Add Planned Leave
+                        </button>
+                        <button id="emergency-leave" class="btn-danger">
+                            <i class="fas fa-exclamation-triangle"></i> Emergency Leave
+                        </button>
+                    </div>
+                </div>
+                <div class="leave-management-content">
+                    <div class="planned-leave-section">
+                        <h3>Planned Leave Schedule</h3>
+                        <div class="calendar-view" id="leave-calendar">
+                            <!-- Calendar will be rendered here -->
+                        </div>
+                        <div class="leave-list">
+                            <h4>Upcoming Leaves</h4>
+                            <div id="upcoming-leaves">
+                                <!-- Leave items will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="emergency-leave-section">
+                        <h3>Emergency Leave (Today)</h3>
+                        <div class="emergency-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Activating emergency leave will cancel all today's appointments and notify patients.</p>
+                        </div>
+                        <div class="emergency-form">
+                            <div class="form-group">
+                                <label for="emergency-reason">Reason for Emergency Leave</label>
+                                <textarea id="emergency-reason" placeholder="Enter reason..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="emergency-notify">Notification Method</label>
+                                <div class="checkbox-group">
+                                    <label>
+                                        <input type="checkbox" id="notify-sms" checked> SMS
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="notify-whatsapp" checked> WhatsApp
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="notify-call"> Phone Call
+                                    </label>
+                                </div>
+                            </div>
+                            <button id="confirm-emergency" class="btn-danger btn-large">
+                                <i class="fas fa-ban"></i> Activate Emergency Leave
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Session Controls -->
+            <section class="dashboard-card session-controls-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-sliders-h"></i> Session Controls</h2>
+                </div>
+                <div class="session-controls">
+                    <div class="control-group">
+                        <label for="session-duration">Session Duration (minutes)</label>
+                        <input type="number" id="session-duration" value="180" min="30" step="30">
+                    </div>
+                    <div class="control-group">
+                        <label for="max-patients">Max Patients per Session</label>
+                        <input type="number" id="max-patients" value="30" min="1">
+                    </div>
+                    <div class="control-group">
+                        <label for="avg-consultation-time">Avg Consultation Time (minutes)</label>
+                        <input type="number" id="avg-consultation-time" value="10" min="1">
+                    </div>
+                    <div class="control-group">
+                        <label for="delay-minutes">Add Delay (minutes)</label>
+                        <div class="delay-control">
+                            <input type="number" id="delay-minutes" value="5" min="0">
+                            <button id="apply-delay" class="btn-warning">
+                                Apply Delay
+                            </button>
+                        </div>
+                    </div>
+                    <div class="control-actions">
+                        <button id="start-session" class="btn-success">
+                            <i class="fas fa-play"></i> Start Session
+                        </button>
+                        <button id="pause-session" class="btn-warning">
+                            <i class="fas fa-pause"></i> Pause Session
+                        </button>
+                        <button id="end-session" class="btn-danger">
+                            <i class="fas fa-stop"></i> End Session
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="planned-leave-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Add Planned Leave</h3>
+            <form id="planned-leave-form">
+                <div class="form-group">
+                    <label for="leave-date">Leave Date</label>
+                    <input type="date" id="leave-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="leave-reason">Reason</label>
+                    <select id="leave-reason" required>
+                        <option value="">Select reason</option>
+                        <option value="personal">Personal</option>
+                        <option value="medical">Medical</option>
+                        <option value="vacation">Vacation</option>
+                        <option value="conference">Conference</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="leave-notes">Additional Notes</label>
+                    <textarea id="leave-notes" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Notify Patients</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" id="leave-notify-sms" checked> SMS
+                        </label>
+                        <label>
+                            <input type="checkbox" id="leave-notify-whatsapp" checked> WhatsApp
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Add Leave</button>
+                    <button type="button" class="btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
